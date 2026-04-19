@@ -24,4 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "TopUsers"
 include(":app")
- 
+include(":domain")
