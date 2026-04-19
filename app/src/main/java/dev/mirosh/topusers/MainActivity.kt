@@ -16,10 +16,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import dagger.hilt.android.AndroidEntryPoint
 import dev.mirosh.topusers.ui.MainViewModel
 import dev.mirosh.topusers.ui.theme.TopUsersTheme
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,12 +53,12 @@ fun MainScreen(
             onClick = viewModel::fetchUsers,
             modifier = Modifier
         ) {
-            Text("Fetch users")
+            Text(text = "Fetch users", fontSize = 24.sp)
         }
     }
 }
 
-@Preview(showBackground = true)
+
 @Composable
 fun MainScreenPreview() {
     MainScreen()

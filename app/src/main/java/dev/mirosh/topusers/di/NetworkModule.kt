@@ -14,7 +14,7 @@ object NetworkModule {
     @Provides
     fun provideRetrofit(): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("http://api.stackexchange.com/2.2")
+            .baseUrl("https://api.stackexchange.com/2.2/")
             .build()
     }
 
