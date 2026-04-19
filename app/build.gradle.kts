@@ -41,6 +41,8 @@ android {
 
 dependencies {
     implementation(project(":domain"))
+    implementation(libs.androidx.viewmodel)
+    implementation(libs.androidx.viewmodel.compose)
     implementation(libs.retrofit)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
