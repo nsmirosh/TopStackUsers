@@ -3,6 +3,8 @@ import org.gradle.kotlin.dsl.implementation
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -41,6 +43,8 @@ android {
 
 dependencies {
     implementation(project(":domain"))
+    implementation(libs.hilt)
+    ksp(libs.hilt.compiler)
     implementation(libs.androidx.viewmodel)
     implementation(libs.androidx.viewmodel.compose)
     implementation(libs.retrofit)

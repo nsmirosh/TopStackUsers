@@ -7,6 +7,5 @@ class MainViewModel : ViewModel() {
 
     fun fetchUsers() {
         Log.d("MainViewModel", "fetchUsers called")
-
     }
 }
