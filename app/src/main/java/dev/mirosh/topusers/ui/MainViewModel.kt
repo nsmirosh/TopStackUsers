@@ -6,6 +6,13 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.mirosh.topusers.data.StackExchangeApi
 import dev.mirosh.topusers.domain.model.User
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import javax.inject.Inject
@@ -15,6 +22,18 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val stackExchangeApi: StackExchangeApi
 ) : ViewModel() {
+
+//    val stateFlow = flow {
+//        fetchUsers()
+//    }.stateIn(
+//        scope = viewModelScope,
+//        started = SharingStarted.WhileSubscribed(5000),
+//        initialValue = 0
+//    )
+
+    private val _users = MutableStateFlow<List<User>>(listOf())
+    val users: StateFlow<List<User>> = _users.asStateFlow()
+
 
     fun fetchUsers() {
         viewModelScope.launch {
@@ -30,6 +49,7 @@ class MainViewModel @Inject constructor(
                     Log.d("MainViewModel", "parsedUser = $parsedUser")
                     userList.add(parsedUser)
                 }
+                _users.value = userList
             } catch (e: Exception) {
                 Log.e("MainViewModel", "${e.message}")
             }
