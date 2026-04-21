@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import org.json.JSONException
 import org.json.JSONObject
 import javax.inject.Inject
 
@@ -45,9 +46,15 @@ class MainViewModel @Inject constructor(
 
                 for (i in 0 until users.length()) {
                     val userJson = users.getJSONObject(i)
-                    val parsedUser = parseUser(userJson)
-                    Log.d("MainViewModel", "parsedUser = $parsedUser")
-                    userList.add(parsedUser)
+                    try {
+                        val parsedUser = parseUser(userJson)
+                        Log.d("MainViewModel", "parsedUser = $parsedUser")
+                        userList.add(parsedUser)
+                    } catch (exception: JSONException) {
+                        // if we can't get the id of the user - we'll skip over this user
+                        // but we'll continue parsing the rest
+                        Log.e("MainViewModel", "exception = ${exception.message}")
+                    }
                 }
                 _users.value = userList
             } catch (e: Exception) {
@@ -61,7 +68,9 @@ class MainViewModel @Inject constructor(
         User(
             displayName = optString("display_name"),
             profileImage = optString("profile_image"),
-            reputation = userJson.optInt("reputation")
+            reputation = optInt("reputation"),
+            // avoiding optional here - cause we won't be able to do anything without the id
+            id = getLong("user_id")
         )
     }
 }

@@ -1,6 +1,8 @@
 package dev.mirosh.topusers.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +11,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -34,11 +40,13 @@ fun MainScreen(
     LaunchedEffect(Unit) {
         viewModel.fetchUsers()
     }
-    UserList(users, modifier)
+    UserList(users, modifier) {
+        viewModel
+    }
 }
 
 @Composable
-fun UserList(users: List<User>, modifier: Modifier = Modifier) {
+fun UserList(users: List<User>, modifier: Modifier = Modifier, onFollow: (Long) -> Unit) {
 
     LazyColumn(
         modifier = modifier,
@@ -61,9 +69,25 @@ fun UserList(users: List<User>, modifier: Modifier = Modifier) {
                     )
 
                     Text(
-                        modifier = Modifier.padding(start = 16.dp),
+                        modifier = Modifier
+                            .padding(start = 16.dp)
+                            .weight(1f),
                         text = it.displayName,
                         fontSize = 24.sp
+                    )
+
+                    Text(
+                        modifier = Modifier
+                            .clickable {
+
+                            }
+                            .padding(start = 16.dp)
+//                            .background(Color.Gray, RoundedCornerShape(16.dp))
+                            .border(2.dp, Color.Blue, RoundedCornerShape(12.dp))
+                            .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp),
+                        text = if (!it.following) "Follow" else "Following",
+                        fontSize = 24.sp,
+                        color = Color.Blue
                     )
                 }
             }
