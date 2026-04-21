@@ -45,12 +45,18 @@ dependencies {
     implementation(project(":domain"))
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
+
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network)
+
     implementation(libs.androidx.viewmodel)
     implementation(libs.androidx.viewmodel.compose)
+
     implementation(libs.retrofit)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
