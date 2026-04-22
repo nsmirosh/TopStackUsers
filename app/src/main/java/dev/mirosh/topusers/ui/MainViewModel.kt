@@ -45,14 +45,4 @@ class MainViewModel @Inject constructor(
         _users.value = currentUsers
     }
 
-    //Doing manual parsing to avoid using 3rd party libs here
-    private fun parseUser(userJson: JSONObject) = with(userJson) {
-        User(
-            displayName = optString("display_name"),
-            profileImage = optString("profile_image"),
-            reputation = optInt("reputation"),
-            // avoiding optional here - cause we won't be able to do anything without the id
-            id = getLong("user_id")
-        )
-    }
 }

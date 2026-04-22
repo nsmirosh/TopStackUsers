@@ -1,11 +1,11 @@
 package dev.mirosh.topusers.data.network
 
-import dev.mirosh.topusers.data.model.UsersResponseDTO
+import okhttp3.ResponseBody
 import retrofit2.http.GET
 
 interface StackExchangeApi {
     @GET("/users?page=1&pagesize=20&order=desc&sort=reputation&site=stackoverflow")
-    suspend fun getUsers(): UsersResponseDTO
+    suspend fun getUsers(): ResponseBody
 }
 /*
 
