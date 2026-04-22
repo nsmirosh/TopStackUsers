@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.mirosh.topusers.data.StackExchangeApi
 import dev.mirosh.topusers.domain.User
+import dev.mirosh.topusers.ui.model.UsersList
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -32,8 +33,8 @@ class MainViewModel @Inject constructor(
 //        initialValue = 0
 //    )
 
-    private val _users = MutableStateFlow<List<User>>(listOf())
-    val users: StateFlow<List<User>> = _users.asStateFlow()
+    private val _users = MutableStateFlow(UsersList(listOf()))
+    val users: StateFlow<UsersList> = _users.asStateFlow()
 
 
     fun fetchUsers() {
@@ -42,7 +43,7 @@ class MainViewModel @Inject constructor(
                 val response = stackExchangeApi.getUsers()
                 val users = JSONObject(response.string()).getJSONArray("items")
                 Log.d("MainViewModel", "response = $response")
-                val userList = mutableListOf<User>()
+                val userList: List<User> = mutableListOf()
 
                 for (i in 0 until users.length()) {
                     val userJson = users.getJSONObject(i)
@@ -56,7 +57,8 @@ class MainViewModel @Inject constructor(
                         Log.e("MainViewModel", "exception = ${exception.message}")
                     }
                 }
-                _users.value = userList
+
+                _users.value = UsersList(userList.to)
             } catch (e: Exception) {
                 Log.e("MainViewModel", "${e.message}")
             }
