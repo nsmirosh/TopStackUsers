@@ -4,7 +4,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import dev.mirosh.topusers.data.StackExchangeApi
+import dev.mirosh.topusers.data.network.StackExchangeApi
 import retrofit2.Retrofit
 
 @Module

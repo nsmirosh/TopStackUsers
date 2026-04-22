@@ -1,19 +1,14 @@
 package dev.mirosh.topusers.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.mirosh.topusers.data.StackExchangeApi
-import dev.mirosh.topusers.domain.User
+import dev.mirosh.topusers.data.network.StackExchangeApi
+import dev.mirosh.topusers.domain.model.User
 import dev.mirosh.topusers.ui.model.UsersList
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import org.json.JSONException
 import org.json.JSONObject
@@ -39,29 +34,6 @@ class MainViewModel @Inject constructor(
 
     fun fetchUsers() {
         viewModelScope.launch {
-            try {
-                val response = stackExchangeApi.getUsers()
-                val users = JSONObject(response.string()).getJSONArray("items")
-                Log.d("MainViewModel", "response = $response")
-                val userList: List<User> = mutableListOf()
-
-                for (i in 0 until users.length()) {
-                    val userJson = users.getJSONObject(i)
-                    try {
-                        val parsedUser = parseUser(userJson)
-                        Log.d("MainViewModel", "parsedUser = $parsedUser")
-                        userList.add(parsedUser)
-                    } catch (exception: JSONException) {
-                        // if we can't get the id of the user - we'll skip over this user
-                        // but we'll continue parsing the rest
-                        Log.e("MainViewModel", "exception = ${exception.message}")
-                    }
-                }
-
-                _users.value = UsersList(userList.to)
-            } catch (e: Exception) {
-                Log.e("MainViewModel", "${e.message}")
-            }
         }
     }
 

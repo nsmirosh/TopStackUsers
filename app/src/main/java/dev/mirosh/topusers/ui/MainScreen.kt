@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
-import dev.mirosh.topusers.domain.User
+import dev.mirosh.topusers.domain.model.User
 
 @Composable
 fun MainScreen(

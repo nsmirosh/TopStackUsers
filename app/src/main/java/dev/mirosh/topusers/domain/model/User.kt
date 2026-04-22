@@ -1,4 +1,4 @@
-package dev.mirosh.topusers.domain
+package dev.mirosh.topusers.domain.model
 
 data class User(
     val id: Long,
