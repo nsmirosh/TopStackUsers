@@ -1,4 +1,4 @@
-package dev.mirosh.topusers
+package dev.mirosh.topusers.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import dagger.hilt.android.AndroidEntryPoint
-import dev.mirosh.topusers.ui.MainScreen
 import dev.mirosh.topusers.ui.theme.TopUsersTheme
 
 @AndroidEntryPoint
@@ -19,9 +18,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TopUsersTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(modifier = Modifier.Companion.fillMaxSize()) { innerPadding ->
                     MainScreen(
-                        modifier = Modifier.padding(innerPadding)
+                        modifier = Modifier.Companion.padding(innerPadding)
                     )
                 }
             }

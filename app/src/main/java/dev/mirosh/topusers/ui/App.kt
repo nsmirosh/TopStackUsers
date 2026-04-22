@@ -1,4 +1,4 @@
-package dev.mirosh.topusers
+package dev.mirosh.topusers.ui
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

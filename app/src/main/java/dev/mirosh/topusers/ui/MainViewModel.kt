@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.mirosh.topusers.data.StackExchangeApi
-import dev.mirosh.topusers.domain.model.User
+import dev.mirosh.topusers.domain.User
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -61,6 +61,14 @@ class MainViewModel @Inject constructor(
                 Log.e("MainViewModel", "${e.message}")
             }
         }
+    }
+
+    fun onFollowCLicked(userId: Long) {
+        val currentUsers = _users.value
+        val userToModify = currentUsers.first { it.id == userId }
+//        userToModify.following = !userToModify.following
+        currentUsers.indexOf(userToModify)
+        _users.value = currentUsers
     }
 
     //Doing manual parsing to avoid using 3rd party libs here

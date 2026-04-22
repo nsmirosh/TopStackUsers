@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
-import dev.mirosh.topusers.domain.model.User
+import dev.mirosh.topusers.domain.User
 
 @Composable
 fun MainScreen(
@@ -40,8 +40,8 @@ fun MainScreen(
     LaunchedEffect(Unit) {
         viewModel.fetchUsers()
     }
-    UserList(users, modifier) {
-        viewModel
+    UserList(users, modifier) { userIdToFollow ->
+        viewModel.onFollowCLicked(userIdToFollow)
     }
 }
 
@@ -53,7 +53,7 @@ fun UserList(users: List<User>, modifier: Modifier = Modifier, onFollow: (Long) 
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.Start
     ) {
-        users.forEach {
+        users.forEach { user ->
             item {
                 Row(
                     modifier = Modifier.padding(16.dp),
@@ -64,7 +64,7 @@ fun UserList(users: List<User>, modifier: Modifier = Modifier, onFollow: (Long) 
                         modifier = Modifier
                             .size(80.dp)
                             .clip(CircleShape),
-                        model = it.profileImage,
+                        model = user.profileImage,
                         contentDescription = null,
                     )
 
@@ -72,20 +72,20 @@ fun UserList(users: List<User>, modifier: Modifier = Modifier, onFollow: (Long) 
                         modifier = Modifier
                             .padding(start = 16.dp)
                             .weight(1f),
-                        text = it.displayName,
+                        text = user.displayName,
                         fontSize = 24.sp
                     )
 
                     Text(
                         modifier = Modifier
                             .clickable {
-
+                                onFollow(user.id)
                             }
                             .padding(start = 16.dp)
 //                            .background(Color.Gray, RoundedCornerShape(16.dp))
                             .border(2.dp, Color.Blue, RoundedCornerShape(12.dp))
                             .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp),
-                        text = if (!it.following) "Follow" else "Following",
+                        text = if (!user.following) "Follow" else "Following",
                         fontSize = 24.sp,
                         color = Color.Blue
                     )
@@ -100,18 +100,21 @@ fun UserList(users: List<User>, modifier: Modifier = Modifier, onFollow: (Long) 
 @Composable
 fun UserListPreview() {
     val user1 = User(
+        -1,
         "John Doe",
         0,
         ""
     )
 
     val user2 = User(
+        -1,
         "John Doe the second",
         94000,
         ""
     )
 
     val user3 = User(
+        -1,
         "John Doe the third",
         100,
         ""
@@ -121,5 +124,7 @@ fun UserListPreview() {
         modifier = Modifier
             .background(Color.White)
             .fillMaxWidth()
-    )
+    ) {
+
+    }
 }
