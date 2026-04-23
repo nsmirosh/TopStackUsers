@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.mirosh.topusers.domain.model.Result
-import dev.mirosh.topusers.domain.repository.StackExchangeRepository
+import dev.mirosh.topusers.domain.usecase.GetTopUsersUseCase
 import dev.mirosh.topusers.ui.model.UserUiModel
 import dev.mirosh.topusers.ui.model.UsersList
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val stackExchangeRepository: StackExchangeRepository
+    private val getTopUsersUseCase: GetTopUsersUseCase
 ) : ViewModel() {
 
 //    val stateFlow = flow {
@@ -33,7 +33,7 @@ class MainViewModel @Inject constructor(
 
     fun fetchUsers() {
         viewModelScope.launch {
-            when (val result = stackExchangeRepository.getTopUsers()) {
+            when (val result = getTopUsersUseCase()) {
                 is Result.Success -> {
                     _users.value = UsersList(result.data.map { UserUiModel.fromUser(it) })
                 }
