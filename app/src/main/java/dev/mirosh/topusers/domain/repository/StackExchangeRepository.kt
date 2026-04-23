@@ -1,7 +1,8 @@
 package dev.mirosh.topusers.domain.repository
 
-import dev.mirosh.topusers.data.model.UserDTO
+import dev.mirosh.topusers.domain.model.Result
+import dev.mirosh.topusers.domain.model.User
 
 interface StackExchangeRepository {
-      suspend fun getTopUsers(): List<UserDTO>
+      suspend fun getTopUsers(): Result<List<User>>
   }

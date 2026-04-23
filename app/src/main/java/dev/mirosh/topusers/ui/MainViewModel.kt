@@ -3,21 +3,20 @@ package dev.mirosh.topusers.ui
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.mirosh.topusers.data.network.StackExchangeApi
-import dev.mirosh.topusers.domain.model.User
+import dev.mirosh.topusers.domain.model.Result
+import dev.mirosh.topusers.domain.repository.StackExchangeRepository
+import dev.mirosh.topusers.ui.model.UserUiModel
 import dev.mirosh.topusers.ui.model.UsersList
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import org.json.JSONException
-import org.json.JSONObject
 import javax.inject.Inject
 
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val stackExchangeApi: StackExchangeApi
+    private val stackExchangeRepository: StackExchangeRepository
 ) : ViewModel() {
 
 //    val stateFlow = flow {
@@ -34,15 +33,26 @@ class MainViewModel @Inject constructor(
 
     fun fetchUsers() {
         viewModelScope.launch {
+            when (val result = stackExchangeRepository.getTopUsers()) {
+                is Result.Success -> {
+                    _users.value = UsersList(result.data.map { UserUiModel.fromUser(it) })
+                }
+
+                is Result.Error -> {
+                    //display error
+                }
+
+            }
         }
     }
 
     fun onFollowCLicked(userId: Long) {
-        val currentUsers = _users.value
-        val userToModify = currentUsers.first { it.id == userId }
+//        val currentUsers = _users.value
+//        val userToModify = currentUsers.first { it.id == userId }
 //        userToModify.following = !userToModify.following
-        currentUsers.indexOf(userToModify)
-        _users.value = currentUsers
+//        currentUsers.indexOf(userToModify)
+//        _users.value = currentUsers
     }
+
 
 }
