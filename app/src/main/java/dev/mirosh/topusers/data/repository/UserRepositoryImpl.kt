@@ -1,17 +1,34 @@
 package dev.mirosh.topusers.data.repository
 
 import android.util.Log
+import androidx.datastore.preferences.core.intPreferencesKey
 import dev.mirosh.topusers.data.network.StackExchangeApi
 import dev.mirosh.topusers.domain.model.Result
 import dev.mirosh.topusers.domain.model.User
+import dev.mirosh.topusers.domain.repository.KeyValueStorage
 import dev.mirosh.topusers.domain.repository.UserRepository
 import org.json.JSONException
 import org.json.JSONObject
 import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
-    private val stackExchangeApi: StackExchangeApi
+    private val stackExchangeApi: StackExchangeApi,
+    private val keyValueStorage: KeyValueStorage
 ) : UserRepository {
+
+    override suspend fun followUser(userId: Long): Result<Unit> {
+        keyValueStorage.incrementCounter()
+
+        return Result.Success(Unit)
+    }
+
+    override suspend fun unFollowUser(userId: Long): Result<Unit> {
+        keyValueStorage.counterFlow().collect {
+            Log.d("UserRepositoryImpl", "$it")
+        }
+
+        return Result.Success(Unit)
+    }
 
     override suspend fun getTopUsers(): Result<List<User>> =
         try {
@@ -39,6 +56,7 @@ class UserRepositoryImpl @Inject constructor(
         }
 
 
+    //TODO remove this and substitute with some lib
     //Doing manual parsing to avoid using 3rd party libs here
     //Also, parsing straight to the User instead of the DTO, cause I don't see the point
     // if I'm doing manual parsing anyway

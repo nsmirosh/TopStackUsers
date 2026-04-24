@@ -19,9 +19,5 @@ data class UserUiModel(
                 reputation = user.reputation,
                 profileImage =  user.profileImage
             )
-
-
-            
-
     }
 }

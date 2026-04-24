@@ -42,16 +42,23 @@ android {
 }
 
 dependencies {
+
+    //DI
     implementation(libs.hilt)
     ksp(libs.hilt.compiler)
 
+    //Coil
     implementation(libs.coil.compose)
     implementation(libs.coil.network)
 
+    //Network
+    implementation(libs.retrofit)
+
+    //Persistence
+    implementation(libs.datastore)
+
     implementation(libs.androidx.viewmodel)
     implementation(libs.androidx.viewmodel.compose)
-
-    implementation(libs.retrofit)
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

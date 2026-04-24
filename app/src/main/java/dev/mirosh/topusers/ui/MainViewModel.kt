@@ -1,9 +1,12 @@
 package dev.mirosh.topusers.ui
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.mirosh.topusers.domain.model.Result
+import dev.mirosh.topusers.domain.repository.KeyValueStorage
+import dev.mirosh.topusers.domain.usecase.FollowUserUseCase
 import dev.mirosh.topusers.domain.usecase.GetTopUsersUseCase
 import dev.mirosh.topusers.ui.model.UserUiModel
 import dev.mirosh.topusers.ui.model.UsersList
@@ -16,7 +19,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val getTopUsersUseCase: GetTopUsersUseCase
+    private val getTopUsersUseCase: GetTopUsersUseCase,
+    private val followUserUseCase: FollowUserUseCase,
+    private val keyValueStorage: KeyValueStorage
 ) : ViewModel() {
 
 //    val stateFlow = flow {
@@ -47,6 +52,14 @@ class MainViewModel @Inject constructor(
     }
 
     fun onFollowCLicked(userId: Long) {
+        viewModelScope.launch {
+            followUserUseCase()
+
+            keyValueStorage.counterFlow().collect {
+                Log.d("UserRepositoryImpl", "$it")
+            }
+        }
+
 //        val currentUsers = _users.value
 //        val userToModify = currentUsers.first { it.id == userId }
 //        userToModify.following = !userToModify.following
