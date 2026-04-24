@@ -4,14 +4,15 @@ import android.util.Log
 import dev.mirosh.topusers.data.network.StackExchangeApi
 import dev.mirosh.topusers.domain.model.Result
 import dev.mirosh.topusers.domain.model.User
-import dev.mirosh.topusers.domain.repository.StackExchangeRepository
+import dev.mirosh.topusers.domain.repository.UserRepository
 import org.json.JSONException
 import org.json.JSONObject
 import javax.inject.Inject
 
-class StackExchangeRepositoryImpl @Inject constructor(
+class UserRepositoryImpl @Inject constructor(
     private val stackExchangeApi: StackExchangeApi
-) : StackExchangeRepository {
+) : UserRepository {
+
     override suspend fun getTopUsers(): Result<List<User>> =
         try {
             val response = stackExchangeApi.getUsers()
