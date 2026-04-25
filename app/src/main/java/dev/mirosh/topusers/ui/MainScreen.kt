@@ -34,9 +34,7 @@ fun MainScreen(
     viewModel: MainViewModel = viewModel()
 ) {
     val users by viewModel.users.collectAsStateWithLifecycle()
-    LaunchedEffect(Unit) {
-        viewModel.fetchUsers()
-    }
+
     UserList(users, modifier) { userIdToFollow ->
         viewModel.toggleFollow(userIdToFollow)
     }

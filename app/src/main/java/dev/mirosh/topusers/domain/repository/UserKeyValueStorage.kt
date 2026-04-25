@@ -7,5 +7,5 @@ import dev.mirosh.topusers.domain.model.Result
 interface UserKeyValueStorage {
     suspend fun toggleFollow(userId: Long): Result<Unit>
 
-    fun getFollowedUserIds(): Flow<Set<String>>
+    fun getFollowedUserIds(): Flow<Set<Long>>
 }

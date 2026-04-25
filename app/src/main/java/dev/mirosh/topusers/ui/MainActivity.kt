@@ -18,9 +18,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             TopUsersTheme {
-                Scaffold(modifier = Modifier.Companion.fillMaxSize()) { innerPadding ->
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     MainScreen(
-                        modifier = Modifier.Companion.padding(innerPadding)
+                        modifier = Modifier.padding(innerPadding)
                     )
                 }
             }

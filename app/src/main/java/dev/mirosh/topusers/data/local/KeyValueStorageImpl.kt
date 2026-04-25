@@ -25,9 +25,9 @@ class KeyValueStorageImpl @Inject constructor(
 
     val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "top_users")
 
-    override fun getFollowedUserIds(): Flow<Set<String>> =
+    override fun getFollowedUserIds(): Flow<Set<Long>> =
         context.dataStore.data.map { preferences ->
-            preferences[FOLLOWED_USER_IDS].orEmpty()
+            preferences[FOLLOWED_USER_IDS].orEmpty().map { it.toLong() }.toSet()
         }
 
     override suspend fun toggleFollow(
