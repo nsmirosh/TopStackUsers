@@ -48,7 +48,7 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun onFollowCLicked(userId: Long) {
+    fun toggleFollow(userId: Long) {
 
         //TODO
         //immediately setting the user as followed, and then changing it back to unfolowed

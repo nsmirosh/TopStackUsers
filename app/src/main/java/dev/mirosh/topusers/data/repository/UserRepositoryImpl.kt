@@ -15,11 +15,8 @@ class UserRepositoryImpl @Inject constructor(
     private val userKeyValueStorage: UserKeyValueStorage
 ) : UserRepository {
 
-    override suspend fun followUser(userId: Long): Result<Unit> =
-        userKeyValueStorage.followUser(userId)
-
-    override suspend fun unFollowUser(userId: Long): Result<Unit> =
-        userKeyValueStorage.followUser(userId)
+    override suspend fun toggleFollow(userId: Long): Result<Unit> =
+        userKeyValueStorage.toggleFollow(userId)
 
     override suspend fun getTopUsers(): Result<List<User>> =
         try {

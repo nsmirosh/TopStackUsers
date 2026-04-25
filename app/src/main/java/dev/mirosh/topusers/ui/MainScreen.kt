@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
-import dev.mirosh.topusers.domain.model.User
 import dev.mirosh.topusers.ui.model.UserUiModel
 import dev.mirosh.topusers.ui.model.UsersList
 
@@ -39,7 +38,7 @@ fun MainScreen(
         viewModel.fetchUsers()
     }
     UserList(users, modifier) { userIdToFollow ->
-        viewModel.onFollowCLicked(userIdToFollow)
+        viewModel.toggleFollow(userIdToFollow)
     }
 }
 

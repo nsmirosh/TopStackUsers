@@ -30,12 +30,18 @@ class KeyValueStorageImpl @Inject constructor(
             preferences[FOLLOWED_USER_IDS].orEmpty()
         }
 
-    override suspend fun followUser(
+    override suspend fun toggleFollow(
         userId: Long,
     ): Result<Unit> = try {
         context.dataStore.edit { preferences ->
+            //initializing the list in case it doesn't exist with .orEmpty()
             val followedUserIds = preferences[FOLLOWED_USER_IDS].orEmpty()
-            preferences[FOLLOWED_USER_IDS] = followedUserIds + userId.toString()
+            val id = userId.toString()
+            preferences[FOLLOWED_USER_IDS] = if (id in followedUserIds) {
+                followedUserIds - id
+            } else {
+                followedUserIds + id
+            }
         }
         Result.Success(Unit)
     } catch (error: IOException) {
@@ -43,20 +49,6 @@ class KeyValueStorageImpl @Inject constructor(
         Result.Error
     }
 
-    override suspend fun unFollowUser(userId: Long): Result<Unit> = try {
-        context.dataStore.edit { preferences ->
-            val followedUserIds = preferences[FOLLOWED_USER_IDS].orEmpty()
-            preferences[FOLLOWED_USER_IDS] = followedUserIds - userId.toString()
-        }
-        Result.Success(Unit)
-    } catch (error: IOException) {
-        Log.e(TAG, "couldn't save to followed user ids = ${error.message}")
-        Result.Error
-    }
-
-    private fun changeFollowStatus(isFollowed: Boolean) {
-
-    }
 
     companion object {
         val FOLLOWED_USER_IDS = stringSetPreferencesKey("followed_user_ids")

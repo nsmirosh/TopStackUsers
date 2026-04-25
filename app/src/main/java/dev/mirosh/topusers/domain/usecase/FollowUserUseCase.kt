@@ -7,5 +7,5 @@ import javax.inject.Inject
 class FollowUserUseCase @Inject constructor(
     private val repository: UserRepository
 ) {
-    suspend operator fun invoke(userId: Long): Result<Unit> = repository.followUser(userId)
+    suspend operator fun invoke(userId: Long): Result<Unit> = repository.toggleFollow(userId)
 }
