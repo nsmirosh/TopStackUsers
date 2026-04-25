@@ -1,11 +1,9 @@
 package dev.mirosh.topusers.ui
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.mirosh.topusers.domain.model.Result
-import dev.mirosh.topusers.domain.repository.KeyValueStorage
 import dev.mirosh.topusers.domain.usecase.FollowUserUseCase
 import dev.mirosh.topusers.domain.usecase.GetTopUsersUseCase
 import dev.mirosh.topusers.ui.model.UserUiModel
@@ -21,7 +19,6 @@ import javax.inject.Inject
 class MainViewModel @Inject constructor(
     private val getTopUsersUseCase: GetTopUsersUseCase,
     private val followUserUseCase: FollowUserUseCase,
-    private val keyValueStorage: KeyValueStorage
 ) : ViewModel() {
 
 //    val stateFlow = flow {
@@ -32,15 +29,15 @@ class MainViewModel @Inject constructor(
 //        initialValue = 0
 //    )
 
-    private val _users = MutableStateFlow(UsersList(listOf()))
-    val users: StateFlow<UsersList> = _users.asStateFlow()
+    private val _usersFlow = MutableStateFlow(UsersList(listOf()))
+    val users: StateFlow<UsersList> = _usersFlow.asStateFlow()
 
 
     fun fetchUsers() {
         viewModelScope.launch {
             when (val result = getTopUsersUseCase()) {
                 is Result.Success -> {
-                    _users.value = UsersList(result.data.map { UserUiModel.fromUser(it) })
+                    _usersFlow.value = UsersList(result.data.map { UserUiModel.fromUser(it) })
                 }
 
                 is Result.Error -> {
@@ -52,12 +49,32 @@ class MainViewModel @Inject constructor(
     }
 
     fun onFollowCLicked(userId: Long) {
-        viewModelScope.launch {
-            followUserUseCase()
 
-            keyValueStorage.counterFlow().collect {
-                Log.d("UserRepositoryImpl", "$it")
+        //TODO
+        //immediately setting the user as followed, and then changing it back to unfolowed
+        // in case the operation fails
+
+        viewModelScope.launch {
+            when (val result = followUserUseCase(userId)) {
+                is Result.Success -> {
+
+                    val oldList = _usersFlow.value
+
+                    val listCopy = UsersList(
+                        oldList.users.map {
+                            if (it.id == userId) it.copy(following = true) else it
+                        })
+
+                    _usersFlow.value = listCopy
+                }
+
+                is Result.Error -> {
+                    //reverting to the old list in case the operation failed
+//                    _usersFlow.value = oldList
+
+                }
             }
+
         }
 
 //        val currentUsers = _users.value

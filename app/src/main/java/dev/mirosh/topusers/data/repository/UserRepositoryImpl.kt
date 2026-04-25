@@ -1,11 +1,10 @@
 package dev.mirosh.topusers.data.repository
 
 import android.util.Log
-import androidx.datastore.preferences.core.intPreferencesKey
 import dev.mirosh.topusers.data.network.StackExchangeApi
 import dev.mirosh.topusers.domain.model.Result
 import dev.mirosh.topusers.domain.model.User
-import dev.mirosh.topusers.domain.repository.KeyValueStorage
+import dev.mirosh.topusers.domain.repository.UserKeyValueStorage
 import dev.mirosh.topusers.domain.repository.UserRepository
 import org.json.JSONException
 import org.json.JSONObject
@@ -13,22 +12,14 @@ import javax.inject.Inject
 
 class UserRepositoryImpl @Inject constructor(
     private val stackExchangeApi: StackExchangeApi,
-    private val keyValueStorage: KeyValueStorage
+    private val userKeyValueStorage: UserKeyValueStorage
 ) : UserRepository {
 
-    override suspend fun followUser(userId: Long): Result<Unit> {
-        keyValueStorage.incrementCounter()
+    override suspend fun followUser(userId: Long): Result<Unit> =
+        userKeyValueStorage.followUser(userId)
 
-        return Result.Success(Unit)
-    }
-
-    override suspend fun unFollowUser(userId: Long): Result<Unit> {
-        keyValueStorage.counterFlow().collect {
-            Log.d("UserRepositoryImpl", "$it")
-        }
-
-        return Result.Success(Unit)
-    }
+    override suspend fun unFollowUser(userId: Long): Result<Unit> =
+        userKeyValueStorage.followUser(userId)
 
     override suspend fun getTopUsers(): Result<List<User>> =
         try {
