@@ -15,9 +15,10 @@ data class UserUiModel(
         fun fromUser(user: User) =
             UserUiModel(
                 id = user.id,
-                displayName =  user.displayName,
+                displayName = user.displayName,
                 reputation = user.reputation,
-                profileImage =  user.profileImage
+                profileImage = user.profileImage,
+                following = user.following
             )
     }
 }

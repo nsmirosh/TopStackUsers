@@ -31,6 +31,14 @@ class UserRepositoryImpl @Inject constructor(
                 is Result.Success -> Result.Success(
                     getTopUsersResult.data.map { user ->
                         user.copy(following = user.id in followedIds)
+                    }.also {
+                        Log.d("UserRepositoryImpl", "emitting list size ${it.size}")
+                        Log.d(
+                            "UserRepositoryImpl", "user being followed == ${
+                                it.filter { user -> user.following }
+                                    .map { user -> user.displayName }
+                            }")
+
                     }
                 )
 
@@ -65,31 +73,6 @@ class UserRepositoryImpl @Inject constructor(
             }
         )
     }
-
-    override suspend fun getTopUsers(): Result<List<User>> =
-        try {
-            val response = stackExchangeApi.getUsers()
-            val users = JSONObject(response.string()).getJSONArray("items")
-            Log.d("MainViewModel", "response = $response")
-            val userList = mutableListOf<User>()
-
-            for (i in 0 until users.length()) {
-                val userJson = users.getJSONObject(i)
-                try {
-                    val parsedUser = parseUser(userJson)
-                    Log.d("MainViewModel", "parsedUser = $parsedUser")
-                    userList.add(parsedUser)
-                } catch (exception: JSONException) {
-                    // if we can't get the id of the user - we'll skip over this user
-                    // but we'll continue parsing the rest
-                    Log.e("MainViewModel", "exception = ${exception.message}")
-                }
-            }
-            Result.Success(userList)
-        } catch (e: Exception) {
-            Log.e("MainViewModel", "${e.message}")
-            Result.Error
-        }
 
 
     //TODO remove this and substitute with some lib

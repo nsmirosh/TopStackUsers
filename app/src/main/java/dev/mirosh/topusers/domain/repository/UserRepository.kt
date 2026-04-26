@@ -6,6 +6,5 @@ import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
     fun observeTopUsers(): Flow<Result<List<User>>>
-    suspend fun getTopUsers(): Result<List<User>>
     suspend fun toggleFollow(userId: Long): Result<Unit>
 }
