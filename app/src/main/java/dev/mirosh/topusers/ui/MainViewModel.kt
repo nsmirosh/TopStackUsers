@@ -22,16 +22,12 @@ class MainViewModel @Inject constructor(
     private val followUserUseCase: FollowUserUseCase,
     observeUsersUseCase: ObserveUsersUseCase,
 ) : ViewModel() {
+    //TODO implement UiState
 
     val users: StateFlow<UsersList> = observeUsersUseCase()
         .map { result ->
             when (result) {
-                is Result.Success -> UsersList(result.data.map { UserUiModel.fromUser(it) }).also { usersList ->
-                    usersList.users.filter { it.following }.forEach {
-                        Log.d("MainViewModel", "converted to UI ${it.displayName}")
-                    }
-                }
-
+                is Result.Success -> UsersList(result.data.map { UserUiModel.fromUser(it) })
                 is Result.Error -> UsersList(emptyList())
             }
         }

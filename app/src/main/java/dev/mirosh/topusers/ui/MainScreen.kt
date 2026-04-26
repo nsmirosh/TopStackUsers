@@ -9,11 +9,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,44 +48,42 @@ fun UserList(userList: UsersList, modifier: Modifier = Modifier, onFollow: (Long
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.Start
     ) {
-        //TODO change to items + keys
-        userList.users.forEach { user ->
-            item {
-                Row(
-                    modifier = Modifier.padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+        items(
+            items = userList.users,
+            key = { it.id }
+        ) { user ->
+            Row(
+                modifier = Modifier.padding(16.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AsyncImage(
+                    modifier = Modifier
+                        .size(80.dp)
+                        .clip(CircleShape),
+                    model = user.profileImage,
+                    contentDescription = null,
+                )
 
-                    AsyncImage(
-                        modifier = Modifier
-                            .size(80.dp)
-                            .clip(CircleShape),
-                        model = user.profileImage,
-                        contentDescription = null,
-                    )
+                Text(
+                    modifier = Modifier
+                        .padding(start = 16.dp)
+                        .weight(1f),
+                    text = user.displayName,
+                    fontSize = 24.sp
+                )
 
-                    Text(
-                        modifier = Modifier
-                            .padding(start = 16.dp)
-                            .weight(1f),
-                        text = user.displayName,
-                        fontSize = 24.sp
-                    )
-
-                    Text(
-                        modifier = Modifier
-                            .clickable {
-                                onFollow(user.id)
-                            }
-                            .padding(start = 16.dp)
-//                            .background(Color.Gray, RoundedCornerShape(16.dp))
-                            .border(2.dp, Color.Blue, RoundedCornerShape(12.dp))
-                            .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp),
-                        text = if (!user.following) "Follow" else "Following",
-                        fontSize = 24.sp,
-                        color = Color.Blue
-                    )
-                }
+                Text(
+                    modifier = Modifier
+                        .clickable {
+                            onFollow(user.id)
+                        }
+                        .padding(start = 16.dp)
+                        .border(2.dp, Color.Blue, RoundedCornerShape(12.dp))
+                        .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp),
+                    text = if (!user.following) "Follow" else "Following",
+                    fontSize = 24.sp,
+                    color = Color.Blue
+                )
             }
         }
     }
