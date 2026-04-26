@@ -1,4 +1,4 @@
-package dev.mirosh.topusers.ui
+package dev.mirosh.topusers.ui.main
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

@@ -1,4 +1,4 @@
-package dev.mirosh.topusers.ui
+package dev.mirosh.topusers.ui.main
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
