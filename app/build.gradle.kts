@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.serialization)
 }
 
 android {
@@ -59,6 +60,10 @@ dependencies {
 
     //Persistence
     implementation(libs.datastore)
+
+    //Serialization
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.converter.kotlinx.serialization)
 
     implementation(libs.androidx.viewmodel)
     implementation(libs.androidx.viewmodel.compose)
