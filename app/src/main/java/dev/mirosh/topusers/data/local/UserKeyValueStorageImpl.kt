@@ -1,32 +1,26 @@
 package dev.mirosh.topusers.data.local
 
-import android.content.Context
 import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.core.IOException
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringSetPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.mirosh.topusers.domain.model.Result
 import dev.mirosh.topusers.domain.repository.UserKeyValueStorage
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
-
 import javax.inject.Inject
 
 
 const val TAG = "KeyValueStorageImpl"
 
-class KeyValueStorageImpl @Inject constructor(
-    @param:ApplicationContext private val context: Context
+class UserKeyValueStorageImpl @Inject constructor(
+    private val topUsersDataStore: DataStore<Preferences>
 ) : UserKeyValueStorage {
 
-    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "top_users")
-
     override fun getFollowedUserIds(): Flow<Set<Long>> =
-        context.dataStore.data.map { preferences ->
+        topUsersDataStore.data.map { preferences ->
             preferences[FOLLOWED_USER_IDS].orEmpty().map { it.toLong() }.toSet()
         }
 
@@ -34,7 +28,7 @@ class KeyValueStorageImpl @Inject constructor(
         userId: Long,
     ): Result<Unit> = try {
         //TODO implement an optimistic update without disk write
-        context.dataStore.edit { preferences ->
+        topUsersDataStore.edit { preferences ->
             //initializing the list in case it doesn't exist with .orEmpty()
             val followedUserIds = preferences[FOLLOWED_USER_IDS].orEmpty()
             val id = userId.toString()

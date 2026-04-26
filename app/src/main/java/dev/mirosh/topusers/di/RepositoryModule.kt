@@ -4,7 +4,7 @@ import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import dev.mirosh.topusers.data.local.KeyValueStorageImpl
+import dev.mirosh.topusers.data.local.UserKeyValueStorageImpl
 import dev.mirosh.topusers.data.repository.UserRepositoryImpl
 import dev.mirosh.topusers.domain.repository.UserKeyValueStorage
 import dev.mirosh.topusers.domain.repository.UserRepository
@@ -23,6 +23,6 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindKeyValueStorage(
-        keyValueStorageImpl: KeyValueStorageImpl
+        keyValueStorageImpl: UserKeyValueStorageImpl
     ): UserKeyValueStorage
 }
