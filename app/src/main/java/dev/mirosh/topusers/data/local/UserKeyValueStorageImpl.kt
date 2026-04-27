@@ -27,7 +27,6 @@ class UserKeyValueStorageImpl @Inject constructor(
     override suspend fun toggleFollow(
         userId: Long,
     ): Result<Unit> = try {
-        //TODO implement an optimistic update without disk write
         topUsersDataStore.edit { preferences ->
             //initializing the list in case it doesn't exist with .orEmpty()
             val followedUserIds = preferences[FOLLOWED_USER_IDS].orEmpty()

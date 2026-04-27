@@ -4,4 +4,5 @@
     <string name="main_screen_error">Oops… \n Something went wrong</string>
     <string name="main_screen_follow">Follow</string>
     <string name="main_screen_unfollow">UnFollow</string>
+    <string name="main_screen_follow_failed">Follow Failed</string>
 </resources>
