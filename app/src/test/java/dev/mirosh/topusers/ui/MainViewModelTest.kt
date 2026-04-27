@@ -8,6 +8,7 @@ import dev.mirosh.topusers.ui.main.MainScreenUiState
 import dev.mirosh.topusers.ui.main.MainViewModel
 import dev.mirosh.topusers.ui.model.UserUiModel
 import dev.mirosh.topusers.ui.model.UsersList
+import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -42,7 +43,7 @@ class MainViewModelTest {
     }
 
     @Test
-    fun `MainViewModel users flow emits an empty result, followed by mapped Users to UserUiModel `() =
+    fun `MainViewModel uiState flow emits Loading state, followed by Success`() =
         runTest {
             //Arrange
             val users = listOf(User(5L, reputation = 125398), User(7L, reputation = 31090))
@@ -71,6 +72,45 @@ class MainViewModelTest {
             assertTrue(result[1] is MainScreenUiState.Success)
             val successResult = result[1] as MainScreenUiState.Success
             assertEquals(expectedResult2, successResult.usersList)
+        }
+
+
+    @Test
+    fun `MainViewModel uiState flow emits Loading state, followed by Error`() =
+        runTest {
+            //Arrange
+            val expectedResult1 = MainScreenUiState.Loading
+
+            val followUserUseCase: FollowUserUseCase = mockk(relaxed = true)
+            val observeUsersUseCase: ObserveUsersUseCase = mockk()
+            every { observeUsersUseCase() } returns flowOf(Result.Error)
+
+            val viewModel = MainViewModel(followUserUseCase, observeUsersUseCase)
+            advanceUntilIdle()
+
+            //Act
+            val result = mutableListOf<MainScreenUiState>()
+            viewModel.users.take(2).toList(result)
+
+            //Assert
+            assertEquals(expectedResult1, result[0])
+            assertTrue(result[1] is MainScreenUiState.Error)
+        }
+
+    @Test
+    fun `toggleFollow invokes followUserUseCase`() =
+        runTest {
+            //Arrange
+            val followUserUseCase: FollowUserUseCase = mockk(relaxed = true)
+            val observeUsersUseCase: ObserveUsersUseCase = mockk(relaxed = true)
+            val viewModel = MainViewModel(followUserUseCase, observeUsersUseCase)
+
+            //Act
+            viewModel.toggleFollow(123L)
+            advanceUntilIdle()
+
+            //Assert
+            coVerify { followUserUseCase(123L) }
         }
 
 }

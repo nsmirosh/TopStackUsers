@@ -25,9 +25,7 @@ class MainViewModel @Inject constructor(
             when (result) {
                 is Result.Success -> {
                     val usersUiList = result.data.map {
-                        UserUiModel.fromUser(
-                            it
-                        )
+                        UserUiModel.fromUser(it)
                     }
                     MainScreenUiState.Success(UsersList(usersUiList))
                 }
