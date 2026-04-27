@@ -10,12 +10,12 @@ data class UserDto(
     @SerialName("user_id") val id: Long,
     @SerialName("display_name") val displayName: String? = null,
     @SerialName("profile_image") val profileImage: String? = null,
-    val reputation: Int = 0,
+    val reputation: Int? = null,
 ) {
     fun toDomain() = User(
         id = id,
         displayName = displayName.orEmpty(),
         profileImage = profileImage.orEmpty(),
-        reputation = reputation,
+        reputation = reputation ?: 0
     )
 }

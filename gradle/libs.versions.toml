@@ -10,6 +10,7 @@ activityCompose = "1.13.0"
 kotlin = "2.3.20"
 ksp = "2.3.6"
 composeBom = "2026.04.01"
+mockk = "1.14.9"
 retrofit = "3.0.0"
 jetbrainsKotlinJvm = "2.3.20"
 hilt = "2.59.2"
@@ -25,6 +26,7 @@ converter-kotlinx-serialization = { module = "com.squareup.retrofit2:converter-k
 hilt = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
 hilt-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerializationJson" }
+mockk = { group = "io.mockk", name = "mockk", version.ref = "mockk" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 datastore = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 

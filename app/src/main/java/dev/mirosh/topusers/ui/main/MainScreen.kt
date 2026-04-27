@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -64,13 +65,23 @@ fun UserList(userList: UsersList, modifier: Modifier = Modifier, onFollow: (Long
                     contentDescription = null,
                 )
 
-                Text(
-                    modifier = Modifier
-                        .padding(start = 16.dp)
-                        .weight(1f),
-                    text = user.displayName,
-                    fontSize = 24.sp
-                )
+                Column(
+                    modifier =
+                        Modifier
+                            .padding(start = 16.dp)
+                            .weight(1f)
+                ) {
+                    Text(
+                        text = user.displayName,
+                        fontSize = 24.sp
+                    )
+
+                    Text(
+                        text = user.reputation,
+                        fontSize = 16.sp
+                    )
+                }
+
 
                 Text(
                     modifier = Modifier
@@ -96,21 +107,21 @@ fun UserListPreview() {
     val user1 = UserUiModel(
         -1,
         "John Doe",
-        0,
+        "115k",
         ""
     )
 
     val user2 = UserUiModel(
         -1,
         "John Doe the second",
-        94000,
+        "110k",
         ""
     )
 
     val user3 = UserUiModel(
         -1,
         "John Doe the third",
-        100,
+        "100k",
         ""
     )
     UserList(
