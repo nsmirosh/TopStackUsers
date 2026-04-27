@@ -8,11 +8,13 @@ import dev.mirosh.topusers.ui.main.MainScreenUiState
 import dev.mirosh.topusers.ui.main.MainViewModel
 import dev.mirosh.topusers.ui.model.UserUiModel
 import dev.mirosh.topusers.ui.model.UsersList
+import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.flow.toList
@@ -30,7 +32,6 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModelTest {
-
 
     @Before
     fun setUp() {
@@ -80,7 +81,6 @@ class MainViewModelTest {
         runTest {
             //Arrange
             val expectedResult1 = MainScreenUiState.Loading
-
             val followUserUseCase: FollowUserUseCase = mockk(relaxed = true)
             val observeUsersUseCase: ObserveUsersUseCase = mockk()
             every { observeUsersUseCase() } returns flowOf(Result.Error)
@@ -98,12 +98,14 @@ class MainViewModelTest {
         }
 
     @Test
-    fun `toggleFollow invokes followUserUseCase`() =
+    fun `toggleFollow() invokes followUserUseCase with Success`() =
         runTest {
             //Arrange
-            val followUserUseCase: FollowUserUseCase = mockk(relaxed = true)
+            val followUserUseCase: FollowUserUseCase = mockk()
             val observeUsersUseCase: ObserveUsersUseCase = mockk(relaxed = true)
             val viewModel = MainViewModel(followUserUseCase, observeUsersUseCase)
+
+            coEvery { followUserUseCase(any()) } returns Result.Success(Unit)
 
             //Act
             viewModel.toggleFollow(123L)
@@ -112,5 +114,25 @@ class MainViewModelTest {
             //Assert
             coVerify { followUserUseCase(123L) }
         }
+
+    @Test
+    fun `toggleFollow() invokes followUserUseCase with Error and emits event`() =
+        runTest {
+            //Arrange
+            val followUserUseCase: FollowUserUseCase = mockk()
+            val observeUsersUseCase: ObserveUsersUseCase = mockk(relaxed = true)
+            val viewModel = MainViewModel(followUserUseCase, observeUsersUseCase)
+            coEvery { followUserUseCase(any()) } returns Result.Error
+
+            //Act
+            viewModel.toggleFollow(123L)
+            val result = viewModel.followFailedEvent.first()
+            advanceUntilIdle()
+
+            //Assert
+            coVerify { followUserUseCase(123L) }
+            assertEquals(Unit, result)
+        }
+
 
 }
