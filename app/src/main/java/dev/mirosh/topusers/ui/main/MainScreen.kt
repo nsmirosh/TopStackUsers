@@ -95,12 +95,10 @@ fun MainContent(
 
             is MainScreenUiState.Success ->
                 UserList(
-                    uiState.usersList,
-                    modifier
-                ) { userIdToFollow ->
-                    onToggleFollow(userIdToFollow)
-                }
-
+                    userList = uiState.usersList,
+                    onFollow = onToggleFollow,
+                    modifier = modifier
+                )
         }
     }
 }
