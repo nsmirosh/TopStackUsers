@@ -4,8 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -13,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -32,14 +35,45 @@ import dev.mirosh.topusers.ui.model.UsersList
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
-    viewModel: MainViewModel = viewModel()
+    mainViewModel: MainViewModel = viewModel()
 ) {
-    val users by viewModel.users.collectAsStateWithLifecycle()
+    val uiState by mainViewModel.users.collectAsStateWithLifecycle()
+    MainContent(
+        uiState,
+        onToggleFollow = mainViewModel::toggleFollow,
+        modifier = modifier
+    )
+}
 
-    UserList(users, modifier) { userIdToFollow ->
-        viewModel.toggleFollow(userIdToFollow)
+@Composable
+fun MainContent(
+    uiState: MainScreenUiState,
+    onToggleFollow: (Long) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier.fillMaxSize()) {
+        when (uiState) {
+            is MainScreenUiState.Loading ->
+                CircularProgressIndicator(modifier = Modifier
+                    .size(100.dp)
+                    .align(Alignment.Center))
+
+            is MainScreenUiState.Error -> {
+                Text("Oops... Something went wrong", modifier = Modifier.align(Alignment.Center))
+            }
+
+            is MainScreenUiState.Success -> {
+                UserList(
+                    uiState.usersList,
+                    modifier
+                ) { userIdToFollow ->
+                    onToggleFollow(userIdToFollow)
+                }
+            }
+        }
     }
 }
+
 
 @Composable
 fun UserList(userList: UsersList, modifier: Modifier = Modifier, onFollow: (Long) -> Unit) {
@@ -100,6 +134,15 @@ fun UserList(userList: UsersList, modifier: Modifier = Modifier, onFollow: (Long
     }
 }
 
+@Preview
+@Composable
+fun MainContentLoadingPreview() {
+    val uiState = MainScreenUiState.Loading
+    MainContent(
+        uiState = uiState,
+        onToggleFollow = {}
+    )
+}
 
 @Preview
 @Composable

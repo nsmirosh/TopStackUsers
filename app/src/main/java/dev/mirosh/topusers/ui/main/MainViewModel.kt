@@ -23,17 +23,25 @@ class MainViewModel @Inject constructor(
 ) : ViewModel() {
     //TODO implement UiState
 
-    val users: StateFlow<UsersList> = observeUsersUseCase()
+    val users: StateFlow<MainScreenUiState> = observeUsersUseCase()
         .map { result ->
             when (result) {
-                is Result.Success -> UsersList(result.data.map { UserUiModel.fromUser(it) })
-                is Result.Error -> UsersList(emptyList())
+                is Result.Success -> {
+                    val usersUiList = result.data.map {
+                        UserUiModel.fromUser(
+                            it
+                        )
+                    }
+                    MainScreenUiState.Success(UsersList(usersUiList))
+                }
+
+                is Result.Error -> MainScreenUiState.Error
             }
         }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(),
-            initialValue = UsersList(emptyList())
+            initialValue = MainScreenUiState.Loading
         )
 
     fun toggleFollow(userId: Long) {
