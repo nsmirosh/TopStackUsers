@@ -23,12 +23,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
+import dev.mirosh.topusers.R
 import dev.mirosh.topusers.ui.model.UserUiModel
 import dev.mirosh.topusers.ui.model.UsersList
 
@@ -54,22 +57,28 @@ fun MainContent(
     Box(modifier = modifier.fillMaxSize()) {
         when (uiState) {
             is MainScreenUiState.Loading ->
-                CircularProgressIndicator(modifier = Modifier
-                    .size(100.dp)
-                    .align(Alignment.Center))
+                CircularProgressIndicator(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .align(Alignment.Center)
+                )
 
-            is MainScreenUiState.Error -> {
-                Text("Oops... Something went wrong", modifier = Modifier.align(Alignment.Center))
-            }
+            is MainScreenUiState.Error ->
+                Text(
+                    stringResource(R.string.main_screen_error),
+                    fontSize = 24.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.align(Alignment.Center)
+                )
 
-            is MainScreenUiState.Success -> {
+            is MainScreenUiState.Success ->
                 UserList(
                     uiState.usersList,
                     modifier
                 ) { userIdToFollow ->
                     onToggleFollow(userIdToFollow)
                 }
-            }
+
         }
     }
 }
@@ -115,8 +124,6 @@ fun UserList(userList: UsersList, modifier: Modifier = Modifier, onFollow: (Long
                         fontSize = 16.sp
                     )
                 }
-
-
                 Text(
                     modifier = Modifier
                         .clickable {
@@ -125,7 +132,10 @@ fun UserList(userList: UsersList, modifier: Modifier = Modifier, onFollow: (Long
                         .padding(start = 16.dp)
                         .border(2.dp, Color.Blue, RoundedCornerShape(12.dp))
                         .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp),
-                    text = if (!user.following) "Follow" else "Following",
+                    text = stringResource(
+                        if (!user.following)
+                            R.string.main_screen_follow else R.string.main_screen_unfollow
+                    ),
                     fontSize = 24.sp,
                     color = Color.Blue
                 )
@@ -138,6 +148,16 @@ fun UserList(userList: UsersList, modifier: Modifier = Modifier, onFollow: (Long
 @Composable
 fun MainContentLoadingPreview() {
     val uiState = MainScreenUiState.Loading
+    MainContent(
+        uiState = uiState,
+        onToggleFollow = {}
+    )
+}
+
+@Preview
+@Composable
+fun MainContentErrorPreview() {
+    val uiState = MainScreenUiState.Error
     MainContent(
         uiState = uiState,
         onToggleFollow = {}
