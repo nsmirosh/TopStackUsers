@@ -15,14 +15,11 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val followUserUseCase: FollowUserUseCase,
     observeUsersUseCase: ObserveUsersUseCase,
 ) : ViewModel() {
-    //TODO implement UiState
-
     val users: StateFlow<MainScreenUiState> = observeUsersUseCase()
         .map { result ->
             when (result) {
@@ -45,10 +42,6 @@ class MainViewModel @Inject constructor(
         )
 
     fun toggleFollow(userId: Long) {
-        //TODO
-        //immediately setting the user as followed, and then changing it back to unfolowed
-        // in case the operation fails
-
         viewModelScope.launch {
             followUserUseCase(userId)
         }
