@@ -16,10 +16,13 @@ import org.junit.Before
 import org.junit.Test
 import dev.mirosh.topusers.domain.model.Result
 import dev.mirosh.topusers.domain.model.User
-import dev.mirosh.topusers.ui.main.UserList
 import dev.mirosh.topusers.ui.model.UserUiModel
 import dev.mirosh.topusers.ui.model.UsersList
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 
@@ -38,25 +41,34 @@ class MainViewModelTest {
         Dispatchers.resetMain()
     }
 
-//    @Test
-//    fun test() = runTest {
-//        //Arrange
-//        val users = listOf(User(1L), User(2L))
-//        val expectedResult = UsersList(listOf(UserUiModel(id = 1L), ())
-//
-//        val followUserUseCase: FollowUserUseCase = mockk(relaxed = true)
-//        val observeUsersUseCase: ObserveUsersUseCase = mockk()
-//        every { observeUsersUseCase() } returns flowOf(Result.Success(users))
-//
-//        val viewModel = MainViewModel(followUserUseCase, observeUsersUseCase)
-//
-//        //Act
-//        val result = viewModel.users.first()
-//
-//
-//        //Assert
-//        assertEquals(UsersList(users), result)
-//
-//
-//    }
+    @Test
+    fun `MainViewModel users flow emits an empty result, followed by mapped Users to UserUiModel `() =
+        runTest {
+            //Arrange
+            val users = listOf(User(5L, reputation = 125398), User(7L, reputation = 31090))
+            val expectedResult = UsersList(listOf())
+            val expectedResult2 =
+                UsersList(
+                    listOf(
+                        UserUiModel(id = 5L, reputation = "125k"),
+                        UserUiModel(id = 7L, reputation = "31k")
+                    )
+                )
+
+            val followUserUseCase: FollowUserUseCase = mockk(relaxed = true)
+            val observeUsersUseCase: ObserveUsersUseCase = mockk()
+            every { observeUsersUseCase() } returns flowOf(Result.Success(users))
+
+            val viewModel = MainViewModel(followUserUseCase, observeUsersUseCase)
+            advanceUntilIdle()
+
+            //Act
+            val result = mutableListOf<UsersList>()
+            viewModel.users.take(2).toList(result)
+
+            //Assert
+            assertEquals(expectedResult, result[0])
+            assertEquals(expectedResult2, result[1])
+        }
+
 }
