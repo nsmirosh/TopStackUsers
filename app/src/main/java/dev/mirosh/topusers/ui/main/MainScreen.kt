@@ -23,6 +23,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -102,9 +104,14 @@ fun UserList(userList: UsersList, modifier: Modifier = Modifier, onFollow: (Long
             ) {
                 AsyncImage(
                     modifier = Modifier
-                        .size(80.dp)
+                        .size(60.dp)
                         .clip(CircleShape),
                     model = user.profileImage,
+                    // Attribution - https://www.flaticon.com/authors/lagot-design
+                    // Used the PNG cause the vectors are paid
+                    placeholder = painterResource(R.drawable.person_placeholder),
+                    //Attribution - https://www.flaticon.com/authors/timothy-miller
+                    error = painterResource(R.drawable.person_error),
                     contentDescription = null,
                 )
 
@@ -116,7 +123,7 @@ fun UserList(userList: UsersList, modifier: Modifier = Modifier, onFollow: (Long
                 ) {
                     Text(
                         text = user.displayName,
-                        fontSize = 24.sp
+                        fontSize = 20.sp
                     )
 
                     Text(
@@ -130,13 +137,13 @@ fun UserList(userList: UsersList, modifier: Modifier = Modifier, onFollow: (Long
                             onFollow(user.id)
                         }
                         .padding(start = 16.dp)
-                        .border(2.dp, Color.Blue, RoundedCornerShape(12.dp))
+                        .border(1.dp, Color.Blue, RoundedCornerShape(12.dp))
                         .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp),
                     text = stringResource(
                         if (!user.following)
                             R.string.main_screen_follow else R.string.main_screen_unfollow
                     ),
-                    fontSize = 24.sp,
+                    fontSize = 20.sp,
                     color = Color.Blue
                 )
             }
