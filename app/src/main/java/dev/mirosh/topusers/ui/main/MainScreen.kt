@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
@@ -49,6 +51,7 @@ fun MainScreen(
 ) {
     val uiState by mainViewModel.users.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
+    val listState = rememberLazyListState()
     val followFailedMessage = stringResource(R.string.main_screen_follow_failed)
 
     LaunchedEffect(Unit) {
@@ -64,6 +67,7 @@ fun MainScreen(
     ) { contentPadding ->
         MainContent(
             uiState,
+            listState,
             onToggleFollow = mainViewModel::toggleFollow,
             modifier = modifier.padding(contentPadding)
         )
@@ -73,6 +77,7 @@ fun MainScreen(
 @Composable
 fun MainContent(
     uiState: MainScreenUiState,
+    listState: LazyListState = rememberLazyListState(),
     onToggleFollow: (Long) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -96,6 +101,7 @@ fun MainContent(
             is MainScreenUiState.Success ->
                 UserList(
                     userList = uiState.usersList,
+                    listState = listState,
                     onFollow = onToggleFollow,
                     modifier = modifier
                 )
@@ -105,10 +111,16 @@ fun MainContent(
 
 
 @Composable
-fun UserList(userList: UsersList, modifier: Modifier = Modifier, onFollow: (Long) -> Unit) {
+fun UserList(
+    userList: UsersList,
+    listState: LazyListState,
+    modifier: Modifier = Modifier,
+    onFollow: (Long) -> Unit
+) {
 
     LazyColumn(
         modifier = modifier,
+        state = listState,
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.Start
     ) {
@@ -213,6 +225,7 @@ fun UserListPreview() {
         ""
     )
     UserList(
+        listState = rememberLazyListState(),
         userList = UsersList(listOf(user1, user2, user3)),
         modifier = Modifier
             .background(Color.White)
