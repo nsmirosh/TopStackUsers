@@ -5,4 +5,6 @@
     <string name="main_screen_follow">Follow</string>
     <string name="main_screen_unfollow">UnFollow</string>
     <string name="main_screen_follow_failed">Follow Failed</string>
+    <string name="main_screen_user_image">User Image</string>
+    <string name="main_screen_user_image_load_failed">User Image Load failed</string>
 </resources>

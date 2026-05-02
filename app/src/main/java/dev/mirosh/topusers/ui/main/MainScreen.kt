@@ -1,5 +1,6 @@
 package dev.mirosh.topusers.ui.main
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -25,12 +26,14 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -40,6 +43,8 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
+import coil3.compose.AsyncImagePainter
+import coil3.compose.rememberAsyncImagePainter
 import dev.mirosh.topusers.R
 import dev.mirosh.topusers.ui.model.UserUiModel
 import dev.mirosh.topusers.ui.model.UsersList
@@ -132,18 +137,35 @@ fun UserList(
                 modifier = Modifier.padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                AsyncImage(
-                    modifier = Modifier
-                        .size(60.dp)
-                        .clip(CircleShape),
-                    model = user.profileImage,
-                    // Attribution - https://www.flaticon.com/authors/lagot-design
-                    // Used the PNG cause the vectors are paid
-                    placeholder = painterResource(R.drawable.person_placeholder),
-                    //Attribution - https://www.flaticon.com/authors/timothy-miller
-                    error = painterResource(R.drawable.person_error),
-                    contentDescription = null,
-                )
+                val painter = rememberAsyncImagePainter(user.profileImage)
+                val state by painter.state.collectAsState()
+
+                when (state) {
+                    is AsyncImagePainter.State.Empty,
+                    is AsyncImagePainter.State.Loading -> {
+                        CircularProgressIndicator()
+                    }
+
+                    is AsyncImagePainter.State.Success -> {
+                        Image(
+                            modifier = Modifier
+                                .size(60.dp)
+                                .clip(CircleShape),
+                            painter = painter,
+                            contentDescription = stringResource(R.string.main_screen_user_image)
+                        )
+                    }
+
+                    is AsyncImagePainter.State.Error -> {
+                        Image(
+                            modifier = Modifier
+                                .size(60.dp)
+                                .clip(CircleShape),
+                            painter = painterResource(R.drawable.person_error),
+                            contentDescription = stringResource(R.string.main_screen_user_image_load_failed)
+                        )
+                    }
+                }
 
                 Column(
                     modifier =
