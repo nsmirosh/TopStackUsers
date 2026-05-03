@@ -6,6 +6,7 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
@@ -45,6 +46,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
+import com.android.tools.screenshot.PreviewTest
 import dev.mirosh.topusers.R
 import dev.mirosh.topusers.ui.model.UserUiModel
 import dev.mirosh.topusers.ui.model.UsersList
@@ -71,8 +73,8 @@ fun MainScreen(
         },
     ) { contentPadding ->
         MainContent(
-            uiState,
-            listState,
+            uiState = uiState,
+            listState = listState,
             onToggleFollow = mainViewModel::toggleFollow,
             modifier = modifier.padding(contentPadding)
         )
@@ -82,9 +84,9 @@ fun MainScreen(
 @Composable
 fun MainContent(
     uiState: MainScreenUiState,
+    modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
     onToggleFollow: (Long) -> Unit,
-    modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         when (uiState) {
@@ -95,13 +97,7 @@ fun MainContent(
                         .align(Alignment.Center)
                 )
 
-            is MainScreenUiState.Error ->
-                Text(
-                    stringResource(R.string.main_screen_error),
-                    fontSize = 24.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.align(Alignment.Center)
-                )
+            is MainScreenUiState.Error -> MainScreenError()
 
             is MainScreenUiState.Success ->
                 UserList(
@@ -202,6 +198,23 @@ fun UserList(
         }
     }
 }
+
+
+@Preview(showBackground = true)
+@Composable
+fun MainScreenError(modifier: Modifier = Modifier) {
+    Box(modifier = modifier.fillMaxSize()) {
+        Text(
+
+            "Not supposed to be here",
+//            stringResource(R.string.main_screen_error),
+            fontSize = 24.sp,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.align(Alignment.Center)
+        )
+    }
+}
+
 
 @Preview
 @Composable

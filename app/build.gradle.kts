@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.serialization)
+    alias(libs.plugins.screenshot)
 }
 
 android {
@@ -44,6 +45,8 @@ android {
     testOptions {
         unitTests.isReturnDefaultValues = true
     }
+
+    experimentalProperties["android.experimental.enableScreenshotTest"] = true
 }
 composeCompiler {
     reportsDestination = layout.buildDirectory.dir("compose_compiler")
@@ -51,6 +54,9 @@ composeCompiler {
 }
 
 dependencies {
+    implementation(libs.screenshot.validation.api)
+    screenshotTestImplementation(libs.screenshot.validation.api)
+    screenshotTestImplementation(libs.androidx.ui.tooling)
 
     //DI
     implementation(libs.hilt)
