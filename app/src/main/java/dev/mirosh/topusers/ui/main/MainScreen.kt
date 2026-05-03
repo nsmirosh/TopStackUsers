@@ -140,32 +140,39 @@ fun UserList(
                 val painter = rememberAsyncImagePainter(user.profileImage)
                 val state by painter.state.collectAsState()
 
-                when (state) {
-                    is AsyncImagePainter.State.Empty,
-                    is AsyncImagePainter.State.Loading -> {
-                        CircularProgressIndicator()
-                    }
+                Image(
+                    modifier = Modifier
+                        .size(60.dp)
+                        .clip(CircleShape),
+                    painter = when (state) {
+                        is AsyncImagePainter.State.Success -> painter
+                        is AsyncImagePainter.State.Empty,
+                        is AsyncImagePainter.State.Loading -> painterResource(R.drawable.person_placeholder)
+                        else -> painterResource(R.drawable.person_error)
 
-                    is AsyncImagePainter.State.Success -> {
-                        Image(
-                            modifier = Modifier
-                                .size(60.dp)
-                                .clip(CircleShape),
-                            painter = painter,
-                            contentDescription = stringResource(R.string.main_screen_user_image)
-                        )
-                    }
+                    },
+                    contentDescription = stringResource(R.string.main_screen_user_image)
+                )
 
-                    is AsyncImagePainter.State.Error -> {
-                        Image(
-                            modifier = Modifier
-                                .size(60.dp)
-                                .clip(CircleShape),
-                            painter = painterResource(R.drawable.person_error),
-                            contentDescription = stringResource(R.string.main_screen_user_image_load_failed)
-                        )
-                    }
-                }
+//                if (state is AsyncImagePainter.State.Success) {
+//                    Image(
+//                        modifier = Modifier
+//                            .size(60.dp)
+//                            .clip(CircleShape),
+//                        painter = painter,
+//                        contentDescription = stringResource(R.string.main_screen_user_image)
+//                    )
+//                } else Image(
+//                    modifier = Modifier
+//                        .size(60.dp)
+//                        .clip(CircleShape),
+//                    painter = painterResource(
+//                        if (state is AsyncImagePainter.State.Error)
+//                            R.drawable.person_error else R.drawable.person_placeholder
+//                    ),
+//                    contentDescription = stringResource(R.string.main_screen_user_image_load_failed)
+//                )
+
 
                 Column(
                     modifier =
