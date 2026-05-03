@@ -10,20 +10,22 @@ import okhttp3.MediaType.Companion.toMediaType
 import retrofit2.Converter
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
     @Provides
+    @Singleton
     fun provideJonConverterFactory(): Converter.Factory {
         val json = Json { ignoreUnknownKeys = true }
         return json.asConverterFactory("application/json".toMediaType())
     }
 
     @Provides
+    @Singleton
     fun provideRetrofit(jsonConverterFactory: Converter.Factory): Retrofit {
-
         return Retrofit.Builder()
             .baseUrl("https://api.stackexchange.com/2.2/")
             .addConverterFactory(jsonConverterFactory)
@@ -31,6 +33,7 @@ object NetworkModule {
     }
 
     @Provides
+    @Singleton
     fun provideStackExchangeApi(retrofit: Retrofit): StackExchangeApi {
         return retrofit.create(StackExchangeApi::class.java)
     }
