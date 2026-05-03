@@ -71,8 +71,8 @@ fun MainScreen(
         },
     ) { contentPadding ->
         MainContent(
-            uiState,
-            listState,
+            uiState = uiState,
+            listState = listState,
             onToggleFollow = mainViewModel::toggleFollow,
             modifier = modifier.padding(contentPadding)
         )
@@ -82,9 +82,9 @@ fun MainScreen(
 @Composable
 fun MainContent(
     uiState: MainScreenUiState,
+    modifier: Modifier = Modifier,
     listState: LazyListState = rememberLazyListState(),
     onToggleFollow: (Long) -> Unit,
-    modifier: Modifier = Modifier
 ) {
     Box(modifier = modifier.fillMaxSize()) {
         when (uiState) {
