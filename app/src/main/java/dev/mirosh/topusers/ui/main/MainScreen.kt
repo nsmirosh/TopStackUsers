@@ -153,27 +153,6 @@ fun UserList(
                     },
                     contentDescription = stringResource(R.string.main_screen_user_image)
                 )
-
-//                if (state is AsyncImagePainter.State.Success) {
-//                    Image(
-//                        modifier = Modifier
-//                            .size(60.dp)
-//                            .clip(CircleShape),
-//                        painter = painter,
-//                        contentDescription = stringResource(R.string.main_screen_user_image)
-//                    )
-//                } else Image(
-//                    modifier = Modifier
-//                        .size(60.dp)
-//                        .clip(CircleShape),
-//                    painter = painterResource(
-//                        if (state is AsyncImagePainter.State.Error)
-//                            R.drawable.person_error else R.drawable.person_placeholder
-//                    ),
-//                    contentDescription = stringResource(R.string.main_screen_user_image_load_failed)
-//                )
-
-
                 Column(
                     modifier =
                         Modifier
