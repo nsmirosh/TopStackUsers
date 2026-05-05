@@ -41,7 +41,7 @@ class MainViewModel @Inject constructor(
         }
         .stateIn(
             scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(),
+            started = SharingStarted.WhileSubscribed(5000),
             initialValue = MainScreenUiState.Loading
         )
 

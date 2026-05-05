@@ -10,6 +10,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 // top-level — created once per process
 val Context.topUsersDataStore: DataStore<Preferences> by preferencesDataStore(name = "top_users")
@@ -19,6 +20,7 @@ val Context.topUsersDataStore: DataStore<Preferences> by preferencesDataStore(na
 object LocalStorageModule {
 
     @Provides
+    @Singleton
     fun provideDataStore(
         @ApplicationContext context: Context
     ): DataStore<Preferences> = context.topUsersDataStore
