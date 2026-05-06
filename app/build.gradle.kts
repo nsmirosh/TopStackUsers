@@ -6,20 +6,19 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.serialization)
-    alias(libs.plugins.screenshot)
     alias(libs.plugins.paparazzi)
 }
 
 android {
     namespace = "dev.mirosh.topusers"
     compileSdk {
-        version = release(37)
+        version = release(36)
     }
 
     defaultConfig {
         applicationId = "dev.mirosh.topusers"
         minSdk = 28
-        targetSdk = 37
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -46,8 +45,6 @@ android {
     testOptions {
         unitTests.isReturnDefaultValues = true
     }
-
-    experimentalProperties["android.experimental.enableScreenshotTest"] = true
 }
 composeCompiler {
     reportsDestination = layout.buildDirectory.dir("compose_compiler")
@@ -55,9 +52,6 @@ composeCompiler {
 }
 
 dependencies {
-    implementation(libs.screenshot.validation.api)
-    screenshotTestImplementation(libs.screenshot.validation.api)
-    screenshotTestImplementation(libs.androidx.ui.tooling)
 
     //DI
     implementation(libs.hilt)

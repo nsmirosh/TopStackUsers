@@ -3,7 +3,6 @@ package dev.mirosh.topusers.ui.screenshots
 import app.cash.paparazzi.DeviceConfig.Companion.PIXEL_5
 import app.cash.paparazzi.Paparazzi
 import dev.mirosh.topusers.ui.main.MainScreenError
-import dev.mirosh.topusers.ui.theme.TopUsersTheme
 import org.junit.Rule
 import org.junit.Test
 
@@ -19,9 +18,7 @@ class ScreenShotTest {
     @Test
     fun newsContentScreenshotTest() {
         paparazzi.snapshot {
-            TopUsersTheme {
-                MainScreenError()
-            }
+            MainScreenError()
         }
     }
 }
