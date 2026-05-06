@@ -187,9 +187,7 @@ fun UserList(
 fun MainScreenError(modifier: Modifier = Modifier) {
     Box(modifier = modifier.fillMaxSize()) {
         Text(
-
-            "Not supposed to be here",
-//            stringResource(R.string.main_screen_error),
+            stringResource(R.string.main_screen_error),
             fontSize = 24.sp,
             textAlign = TextAlign.Center,
             modifier = Modifier.align(Alignment.Center)
