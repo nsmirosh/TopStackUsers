@@ -42,8 +42,11 @@ android {
     buildFeatures {
         compose = true
     }
+
     testOptions {
-        unitTests.isReturnDefaultValues = true
+        unitTests {
+            isReturnDefaultValues = true
+        }
     }
 }
 composeCompiler {

@@ -41,7 +41,6 @@ class UserRepositoryImpl @Inject constructor(
                 val users = stackExchangeApi.getUsers().items.map { it.toDomain() }
                 Result.Success(users)
             } catch (e: Exception) {
-                Log.e("MainViewModel", "${e.message}")
                 Result.Error
             }
         )

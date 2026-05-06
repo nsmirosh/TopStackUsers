@@ -39,7 +39,7 @@ class UserKeyValueStorageImpl @Inject constructor(
         }
         Result.Success(Unit)
     } catch (error: IOException) {
-        Log.e(TAG, "couldn't save to followed user ids = ${error.message}")
+//        Log.e(TAG, "couldn't save to followed user ids = ${error.message}")
         Result.Error
     }
 
