@@ -33,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -125,59 +126,65 @@ fun UserList(
             items = userList.users,
             key = { it.id }
         ) { user ->
-            Row(
-                modifier = Modifier.padding(16.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                val painter = rememberAsyncImagePainter(user.profileImage)
-                val state by painter.state.collectAsState()
-
-                Image(
-                    modifier = Modifier
-                        .size(60.dp)
-                        .clip(CircleShape),
-                    painter = when (state) {
-                        is AsyncImagePainter.State.Success -> painter
-                        is AsyncImagePainter.State.Empty,
-                        is AsyncImagePainter.State.Loading -> painterResource(R.drawable.person_placeholder)
-                        else -> painterResource(R.drawable.person_error)
-
-                    },
-                    contentDescription = stringResource(R.string.main_screen_user_image)
-                )
-                Column(
-                    modifier =
-                        Modifier
-                            .padding(start = 16.dp)
-                            .weight(1f)
-                ) {
-                    Text(
-                        text = user.displayName,
-                        fontSize = 20.sp
-                    )
-
-                    Text(
-                        text = user.reputation,
-                        fontSize = 16.sp
-                    )
-                }
-                Text(
-                    modifier = Modifier
-                        .clickable {
-                            onFollow(user.id)
-                        }
-                        .padding(start = 16.dp)
-                        .border(1.dp, Color.Blue, RoundedCornerShape(12.dp))
-                        .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp),
-                    text = stringResource(
-                        if (!user.following)
-                            R.string.main_screen_follow else R.string.main_screen_unfollow
-                    ),
-                    fontSize = 20.sp,
-                    color = Color.Blue
-                )
-            }
+            ListItem(user, onFollow)
         }
+    }
+}
+
+@Composable
+fun ListItem(user: UserUiModel, onFollow: (Long) -> Unit) {
+    Row(
+        modifier = Modifier.padding(16.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        val painter = rememberAsyncImagePainter(user.profileImage)
+        val state by painter.state.collectAsState()
+
+        Image(
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .size(60.dp)
+                .clip(CircleShape),
+            painter = when (state) {
+                is AsyncImagePainter.State.Success -> painter
+                is AsyncImagePainter.State.Empty,
+                is AsyncImagePainter.State.Loading -> painterResource(R.drawable.person_placeholder)
+
+                else -> painterResource(R.drawable.person_error)
+
+            },
+            contentDescription = stringResource(R.string.main_screen_user_image)
+        )
+        Column(
+            modifier = Modifier
+                    .padding(start = 16.dp)
+                    .weight(1f),
+            verticalArrangement = Arrangement.Center
+        ) {
+            Text(
+                text = user.displayName,
+                fontSize = 20.sp
+            )
+            Text(
+                text = user.reputation,
+                fontSize = 16.sp
+            )
+        }
+        Text(
+            modifier = Modifier
+                .clickable {
+                    onFollow(user.id)
+                }
+                .padding(start = 16.dp)
+                .border(1.dp, Color.Blue, RoundedCornerShape(12.dp))
+                .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp),
+            text = stringResource(
+                if (!user.following)
+                    R.string.main_screen_follow else R.string.main_screen_unfollow
+            ),
+            fontSize = 20.sp,
+            color = Color.Blue
+        )
     }
 }
 
@@ -192,6 +199,21 @@ fun MainScreenError(modifier: Modifier = Modifier) {
             textAlign = TextAlign.Center,
             modifier = Modifier.align(Alignment.Center)
         )
+    }
+}
+
+
+@Preview(showBackground = true)
+@Composable
+fun UserListItemPreview() {
+
+    val userUiModel = UserUiModel(
+        id = 50L,
+        displayName = "Nick Mirosh"
+    )
+
+    ListItem(userUiModel) {
+
     }
 }
 
