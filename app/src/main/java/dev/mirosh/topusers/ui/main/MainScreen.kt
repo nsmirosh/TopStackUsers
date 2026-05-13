@@ -1,12 +1,10 @@
 package dev.mirosh.topusers.ui.main
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,15 +16,17 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Button
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -37,13 +37,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import coil3.compose.AsyncImagePainter
-import coil3.compose.rememberAsyncImagePainter
+import coil3.compose.AsyncImage
 import dev.mirosh.topusers.R
 import dev.mirosh.topusers.ui.model.UserUiModel
 import dev.mirosh.topusers.ui.model.UsersList
@@ -119,7 +119,8 @@ fun UserList(
     LazyColumn(
         modifier = modifier,
         state = listState,
-        verticalArrangement = Arrangement.Center,
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalAlignment = Alignment.Start
     ) {
         items(
@@ -133,58 +134,65 @@ fun UserList(
 
 @Composable
 fun ListItem(user: UserUiModel, onFollow: (Long) -> Unit) {
-    Row(
-        modifier = Modifier.padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        val painter = rememberAsyncImagePainter(user.profileImage)
-        val state by painter.state.collectAsState()
+        Row(
+            modifier = Modifier.padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            AsyncImage(
+                contentScale = ContentScale.Fit,
+                contentDescription = stringResource(R.string.main_screen_user_image),
+                modifier = Modifier
+                    .size(60.dp)
+                    .clip(CircleShape),
+                error = painterResource(R.drawable.person_error),
+                model = user.profileImage,
+                placeholder = painterResource(R.drawable.person_placeholder)
+            )
 
-        Image(
-            contentScale = ContentScale.Fit,
-            modifier = Modifier
-                .size(60.dp)
-                .clip(CircleShape),
-            painter = when (state) {
-                is AsyncImagePainter.State.Success -> painter
-                is AsyncImagePainter.State.Empty,
-                is AsyncImagePainter.State.Loading -> painterResource(R.drawable.person_placeholder)
-
-                else -> painterResource(R.drawable.person_error)
-
-            },
-            contentDescription = stringResource(R.string.main_screen_user_image)
-        )
-        Column(
-            modifier = Modifier
+            Column(
+                modifier = Modifier
                     .padding(start = 16.dp)
                     .weight(1f),
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(
-                text = user.displayName,
-                fontSize = 20.sp
-            )
-            Text(
-                text = user.reputation,
-                fontSize = 16.sp
-            )
-        }
-        Text(
-            modifier = Modifier
-                .clickable {
-                    onFollow(user.id)
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text(
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis,
+                    text = user.displayName,
+                    fontSize = 20.sp
+                )
+                Text(
+                    text = user.reputation,
+                    fontSize = 16.sp
+                )
+            }
+            val buttonModifier = Modifier.padding(start = 16.dp)
+            if (user.following) {
+                Button(
+                    onClick = { onFollow(user.id) },
+                    modifier = buttonModifier
+                ) {
+                    Text(
+                        text = stringResource(R.string.main_screen_following),
+                        fontSize = 16.sp
+                    )
                 }
-                .padding(start = 16.dp)
-                .border(1.dp, Color.Blue, RoundedCornerShape(12.dp))
-                .padding(start = 24.dp, end = 24.dp, top = 8.dp, bottom = 8.dp),
-            text = stringResource(
-                if (!user.following)
-                    R.string.main_screen_follow else R.string.main_screen_unfollow
-            ),
-            fontSize = 20.sp,
-            color = Color.Blue
-        )
+            } else {
+                OutlinedButton(
+                    onClick = { onFollow(user.id) },
+                    modifier = buttonModifier
+                ) {
+                    Text(
+                        text = stringResource(R.string.main_screen_follow),
+                        fontSize = 16.sp
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -218,7 +226,7 @@ fun UserListItemPreview() {
 }
 
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun MainContentLoadingPreview() {
     val uiState = MainScreenUiState.Loading
@@ -228,35 +236,25 @@ fun MainContentLoadingPreview() {
     )
 }
 
-@Preview
-@Composable
-fun MainContentErrorPreview() {
-    val uiState = MainScreenUiState.Error
-    MainContent(
-        uiState = uiState,
-        onToggleFollow = {}
-    )
-}
-
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun UserListPreview() {
     val user1 = UserUiModel(
-        -1,
+        1,
         "John Doe",
         "115k",
         ""
     )
 
     val user2 = UserUiModel(
-        -1,
+        2,
         "John Doe the second",
         "110k",
         ""
     )
 
     val user3 = UserUiModel(
-        -1,
+        3,
         "John Doe the third",
         "100k",
         ""
@@ -270,4 +268,54 @@ fun UserListPreview() {
     ) {
 
     }
+}
+
+@Preview
+@Composable
+fun ListItemWithLongNameFollowing() {
+    val userUIModel = UserUiModel(
+        id = 1,
+        displayName = "Mykola (Nick) Serhiyovych Miroshnychenko",
+        reputation = "1,000k",
+        profileImage = "",
+        following = true
+    )
+    ListItem(user = userUIModel) {}
+}
+
+@Preview
+@Composable
+fun ListItemWithLongNameNotFollowing() {
+    val userUIModel = UserUiModel(
+        id = 1,
+        displayName = "Mykola (Nick) Serhiyovych Miroshnychenko",
+        profileImage = "",
+        reputation = "1000k",
+    )
+    ListItem(user = userUIModel) {}
+}
+
+@Preview
+@Composable
+fun ListItemWithShortNameFollowing() {
+    val userUIModel = UserUiModel(
+        id = 1,
+        displayName = "Nick Mirosh",
+        reputation = "1000k",
+        following = true,
+        profileImage = ""
+    )
+    ListItem(user = userUIModel) {}
+}
+
+@Preview
+@Composable
+fun ListItemWithShortNameNotFollowing() {
+    val userUIModel = UserUiModel(
+        id = 1,
+        displayName = "Nick Mirosh",
+        reputation = "1000k",
+        profileImage = ""
+    )
+    ListItem(user = userUIModel) {}
 }
