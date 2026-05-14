@@ -1,6 +1,5 @@
 package dev.mirosh.topusers.data.repository
 
-import android.util.Log
 import dev.mirosh.topusers.data.network.StackExchangeApi
 import dev.mirosh.topusers.domain.model.Result
 import dev.mirosh.topusers.domain.model.User
