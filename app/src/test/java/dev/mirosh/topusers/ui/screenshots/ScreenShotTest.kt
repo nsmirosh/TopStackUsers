@@ -19,7 +19,6 @@ class ScreenShotTest {
         deviceConfig = PIXEL_5,
         theme = "android:Theme.Material.Light.NoActionBar",
         renderingMode = RenderingMode.SHRINK,
-        maxPercentDifference = 2.0,
     )
 
     @Test
